@@ -52,6 +52,6 @@ public class Create implements Command{
 
     @Override
     public int count() {
-        return 1;
+        return 0;
     }
 }
