@@ -1,4 +1,4 @@
-package main.java.Sqlcmd.Command;
+package main.java.Sqlcmd.controller.Command;
 
 /**
  * Created by Kirill on 15.07.2017.

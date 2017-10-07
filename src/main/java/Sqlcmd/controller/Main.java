@@ -1,5 +1,7 @@
 package main.java.Sqlcmd.controller;
 
+import main.java.Sqlcmd.model.DatabaseManager;
+import main.java.Sqlcmd.model.JDBCDatabaseManager;
 import main.java.Sqlcmd.view.Console;
 import main.java.Sqlcmd.view.View;
 

@@ -1,13 +1,12 @@
-package main.java.Sqlcmd.Command;
+package main.java.Sqlcmd.controller.Command;
 
-import main.java.Sqlcmd.controller.DataSet;
-import main.java.Sqlcmd.controller.DatabaseManager;
+import main.java.Sqlcmd.model.DataSet;
+import main.java.Sqlcmd.model.DatabaseManager;
 import main.java.Sqlcmd.view.View;
-
-import java.sql.SQLException;
 
 /**
  * Created by Kirill on 16.07.2017.
+ * create|users|username|value1|user_password|value2
  */
 public class Create implements Command{
 
@@ -52,6 +51,6 @@ public class Create implements Command{
 
     @Override
     public int count() {
-        return 0;
+        return 0 ;
     }
 }

@@ -1,4 +1,4 @@
-package main.java.Sqlcmd.controller;
+package main.java.Sqlcmd.model;
 
 import java.sql.SQLException;
 
@@ -15,11 +15,14 @@ public interface DatabaseManager {
 
     void clear(String tableName);
 
+    void delete(String tableName);
+
     void create(String tableName, DataSet input);
 
     void update(String tableName, int id, DataSet newValue);
 
     String[] getTableColumns(String tableName);
+    String[] getTabls();
 
     boolean isConnected();
 

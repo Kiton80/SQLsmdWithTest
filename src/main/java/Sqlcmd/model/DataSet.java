@@ -1,4 +1,4 @@
-package main.java.Sqlcmd.controller;
+package main.java.Sqlcmd.model;
 
 import java.util.Arrays;
 

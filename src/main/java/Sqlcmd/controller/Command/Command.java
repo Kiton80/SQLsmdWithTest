@@ -1,4 +1,4 @@
-package main.java.Sqlcmd.Command;
+package main.java.Sqlcmd.controller.Command;
 
 
 import java.sql.SQLException;

@@ -1,8 +1,6 @@
-package main.java.Sqlcmd.Command;
+package main.java.Sqlcmd.controller.Command;
 
 import main.java.Sqlcmd.view.View;
-
-import java.sql.SQLException;
 
 /**
  * Created by Kirill on 15.07.2017.
@@ -37,6 +35,9 @@ public class Help implements Command {
 
         view.write("create"+offset1+"create|tableName|column1|value1|column2|value2|...|columnN|valueN");
         view.write(offset2+"для создания записи в таблице");
+
+        view.write("AvailableTables"+"\t\t\t\t"+"AvailableTables");
+        view.write(offset2+"для вывода всех доступных таблиц ");
 
 
     }

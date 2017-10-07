@@ -1,6 +1,7 @@
 package main.java.Sqlcmd.controller;
 
-import main.java.Sqlcmd.Command.*;
+import main.java.Sqlcmd.controller.Command.*;
+import main.java.Sqlcmd.model.DatabaseManager;
 import main.java.Sqlcmd.view.View;
 
 /**
@@ -17,8 +18,9 @@ public class MainController {
                 new Connect(manager, view),
                 new Exit(view,manager),
                 new Help(view),
+                new Delete(manager,view),
 //                new IsConnected(manager, view),
-//                new List(manager, view),
+               new AvailableTables(manager, view),
 //                new Clear(manager, view),
                 new Create(manager, view)
 //                new Find(manager, view),
