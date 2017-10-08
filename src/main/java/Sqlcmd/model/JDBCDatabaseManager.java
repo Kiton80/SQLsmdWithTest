@@ -16,7 +16,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
     public DataSet[] getTableData(String tableName) {
         String sql ="SELECT * FROM "+tableName;// +"WHERE id_user >2";
 
-        ResultSet rs =
+       // ResultSet rs =
 
         return new DataSet[0];
     }
