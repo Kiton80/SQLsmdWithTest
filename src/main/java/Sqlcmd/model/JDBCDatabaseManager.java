@@ -14,11 +14,15 @@ public class JDBCDatabaseManager implements DatabaseManager {
 
     @Override
     public DataSet[] getTableData(String tableName) {
+        String sql ="SELECT * FROM "+tableName;// +"WHERE id_user >2";
+
+        ResultSet rs =
+
         return new DataSet[0];
     }
 
     @Override
-    public String[] getTableNames() {  //todo
+    public String[] getTableNames() {
         DatabaseMetaData metaData = null;
         String[] result = new String[1000];
         int index = 0;

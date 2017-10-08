@@ -89,9 +89,9 @@ public class MainG {
         ResultSet rs = st.executeQuery(sql);
         while (rs.next())
         {
-           System.out.println("id: "+rs.getString(1));
-           System.out.println("name: "+rs.getString(2));
-           System.out.println("password: "+rs.getString(3));
+           System.out.print("id: "+rs.getString(1));
+           System.out.print("  name: "+rs.getString(2));
+           System.out.println("  password: "+rs.getString(3));
         }
         rs.close();
         st.close();
