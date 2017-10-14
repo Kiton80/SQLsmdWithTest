@@ -12,7 +12,7 @@ import java.util.List;
  * Created by Kirill on 07.10.2017.
  */
 public class AvailableTables implements Command {
-    private static String COMMAND_SAMPLE = "AvailableTables";
+    private static String COMMAND_SAMPLE = "AvailableTables|";
 
     private DatabaseManager manager;
     private View view;
