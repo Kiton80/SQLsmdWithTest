@@ -19,6 +19,7 @@ public class MainController {
                 new Exit(view,manager),
                 new Help(view),
                 new Delete(manager,view),
+                new Tables( manager,view),
 //                new IsConnected(manager, view),
                new AvailableTables(manager, view),
 //                new Clear(manager, view),

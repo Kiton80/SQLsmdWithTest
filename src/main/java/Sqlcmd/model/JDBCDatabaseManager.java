@@ -4,7 +4,7 @@ import main.java.Sqlcmd.model.DataSet;
 import main.java.Sqlcmd.model.DatabaseManager;
 
 import java.sql.*;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Created by Kirill on 09.07.2017.
@@ -12,37 +12,49 @@ import java.util.Arrays;
 public class JDBCDatabaseManager implements DatabaseManager {
     public Connection connection;
 
+//    @Override
+//    public DataSet[] getTableData(String tableName) {
+//        String sql ="SELECT * FROM "+tableName;// +"WHERE id_user >2";
+//
+//       // ResultSet rs =
+//
+//        return new DataSet[0];
+//    }
     @Override
-    public DataSet[] getTableData(String tableName) {
-        String sql ="SELECT * FROM "+tableName;// +"WHERE id_user >2";
+    public List<Map<String, Object>> getTableData(String tableName) {
+        List<Map<String, Object>> result = new LinkedList<>();
+        // try-with-resources statement ensures that each resource is closed at the end of the statement
+        try (Statement stmt = connection.createStatement();
+             ResultSet tableData = stmt.executeQuery("SELECT * FROM public." + tableName)) {
+            ResultSetMetaData metaData = tableData.getMetaData();
 
-       // ResultSet rs =
-
-        return new DataSet[0];
+            while (tableData.next()) {
+                Map<String, Object> data = new LinkedHashMap<>();
+                for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                    data.put(metaData.getColumnName(i), tableData.getObject(i));
+                }
+                result.add(data);
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getLocalizedMessage());
+        }
     }
 
     @Override
     public String[] getTableNames() {
-        DatabaseMetaData metaData = null;
-        String[] result = new String[1000];
-        int index = 0;
 
-        try {
-            metaData = connection.getMetaData();
-
-            ResultSet resultSet = metaData.getTables(null, "public", "%", new String[]{"TABLE"});
-
-            for (; index < result.length; index++) {
-                if (!resultSet.next()) {
-                    break;
-                }
-                result[index] = resultSet.getString(3);
+        Set<String> tables = new LinkedHashSet<>();
+        try (Statement stmt = connection.createStatement();
+             ResultSet tableNames = stmt.executeQuery("SELECT table_name FROM information_schema.tables " +
+                     "WHERE table_schema='public' AND table_type='BASE TABLE'")) {
+            while (tableNames.next()) {
+                tables.add(tableNames.getString("table_name"));
             }
+            return tables.toArray(new String[tables.size()]);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getLocalizedMessage());
         }
-        result = Arrays.copyOf(result, index);
-        return result;
     }
 
     @Override
