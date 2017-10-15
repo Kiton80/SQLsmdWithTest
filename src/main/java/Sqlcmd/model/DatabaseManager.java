@@ -1,8 +1,6 @@
 package main.java.Sqlcmd.model;
 
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Kirill on 09.07.2017.
@@ -10,9 +8,9 @@ import java.util.Map;
 public interface DatabaseManager {
 
     //DataSet[] getTableData(String tableName);
-    public List<Map<String, Object>> getTableData(String tableName);
+    public DataSet[] getTableData(String tableName);
 
-    String[] getTableNames();
+
 
     void connect(String database, String userName, String password);
 
@@ -25,7 +23,9 @@ public interface DatabaseManager {
     void update(String tableName, int id, DataSet newValue);
 
     String[] getTableColumns(String tableName);
-    String[] getTabls();
+
+    // String[] getTabls();
+   String[] getTableNames();
 
     boolean isConnected();
 
