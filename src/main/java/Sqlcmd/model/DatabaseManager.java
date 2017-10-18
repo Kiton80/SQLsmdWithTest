@@ -1,6 +1,7 @@
 package main.java.Sqlcmd.model;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Created by Kirill on 09.07.2017.
@@ -8,7 +9,7 @@ import java.sql.SQLException;
 public interface DatabaseManager {
 
     //DataSet[] getTableData(String tableName);
-    public DataSet[] getTableData(String tableName);
+    public ArrayList<DataSet> getTableData(String tableName);
 
 
 
@@ -30,4 +31,6 @@ public interface DatabaseManager {
     boolean isConnected();
 
     void exit() throws SQLException;
+
+    String[] getTableColumnsName(String tableName);
 }

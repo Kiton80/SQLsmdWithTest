@@ -47,19 +47,19 @@ public class MainG {
 
         Statement stmt = connection.createStatement();
 
-         sql = "INSERT INTO users " + "VALUES (DEFAULT , 'Zara','sdfsdfsadf')";
+        sql = "INSERT INTO users " + "VALUES (DEFAULT , 'Zara','sdfsdfsadf')";
         Insert(sql, stmt);
 
 
 
-        sql = "SELECT * FROM users WHERE id_user >2";
+        sql = "SELECT * FROM users WHERE id_user >0";
         select(sql, connection);
 
 
         sql = "DELETE FROM users WHERE id_user<20 AND id_user>9";
         Delete(sql, connection);
 
-        sql = "UPDATE users SET user_password=? WHERE id_user>3 ";
+        sql = "UPDATE users SET user_password=? WHERE id_user>40 ";
         update(sql, connection);
 
 
