@@ -21,6 +21,7 @@ public class MainController {
                 new Delete(manager,view),
                 new Tables( manager,view),
                 new Find( manager,view),
+                new Insert(manager,view),
 //                new IsConnected(manager, view),
 //               new AvailableTables(manager, view),
 //                new Clear(manager, view),
@@ -72,6 +73,7 @@ public class MainController {
     private void printError(Exception e) {
         String message = e.getMessage();
         Throwable cause = e.getCause();
+
         if (cause != null) {
             message += " " + cause.getMessage();
         }

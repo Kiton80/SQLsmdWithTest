@@ -31,18 +31,6 @@ public class JDBCDatabaseManager implements DatabaseManager {
         return resultDataSet;
     }
 
-    private int getResultSetRowCount(ResultSet rs) {
-        int size = 0;
-        try {
-            rs.last();
-            size = rs.getRow();
-            rs.beforeFirst();
-        }
-        catch(SQLException ex) {
-            return 0;
-        }
-        return size;
-    }
 
     @Override
     public String[] getTableNames() {
@@ -82,6 +70,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
 
     }
 
+    // todo . wrong implementation of the method. fix and criate new.
     @Override
     public void clear(String tableName) {
         try {
@@ -95,10 +84,9 @@ public class JDBCDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void delete(String tableName) {
+    public void deleteTable(String tableName) {
         try {
             Statement stmt = connection.createStatement();
-            // String[] tableNames=
             stmt.execute("DROP TABLE IF EXISTS public. " + "(" + tableName + ")");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -106,6 +94,24 @@ public class JDBCDatabaseManager implements DatabaseManager {
 
     }
 
+    @Override
+    public boolean insert(String tableName, DataSet input) throws Exception {
+        boolean flag=false;
+
+        try (Statement stm=connection.createStatement()) {
+            String sql = "INSERT INTO public." + tableName + " VALUES (DEFAULT";
+//            int index=0;
+            for (int i = 0; i < input.getSize(); i++) {
+                sql = sql + "," + input.data[i].getValue();  // BAG todo
+//                index++;
+            }
+            flag = stm.execute(sql + " )");
+        }catch (SQLException e){
+            e.printStackTrace();
+            throw new Exception("что-то пошло не так");
+        }
+        return flag;
+    }
 
     @Override
     public void create(String tableName, DataSet input) {
@@ -164,7 +170,6 @@ public class JDBCDatabaseManager implements DatabaseManager {
         return string;
     }
 
-    //to delite!! todo
     @Override
     public String[] getTableColumns(String tableName) {
         try {
@@ -196,15 +201,10 @@ public class JDBCDatabaseManager implements DatabaseManager {
             ResultSet rs1 = stmt.executeQuery("SELECT * FROM public."+tableName);
             int columnsCount=rs1.getMetaData().getColumnCount();
             res= new String[columnsCount];
-
-//            ResultSet rs = stmt.executeQuery("SELECT * FROM information_schema.columns WHERE table_schema = 'public' AND table_name = '" + tableName);
-//
             int index=0;
             for (int i = 0; i <columnsCount ; i++) {
                 res[index++] =(String) rs1.getMetaData().getColumnName(i+1);
             }
-//            res = Arrays.copyOf(res, index, String[].class);
-            //rs.close();
             stmt.close();
 
 
@@ -216,13 +216,39 @@ public class JDBCDatabaseManager implements DatabaseManager {
         return res;
     }
 
+    @Override
+    public List<String> ColumnNamesWithoutAvtoincrement(String tableName) {
+        {
+            ArrayList<String> result = new ArrayList<>();
+            try {
+                Statement stmt = connection.createStatement();
+
+                ResultSet rs1 = stmt.executeQuery("SELECT column_name  FROM information_schema.columns\n" +
+                        "where  Table_schema = 'public' and column_name not in (\n" +
+                        "  SELECT column_name  FROM information_schema.columns\n" +
+                        "  where  Table_schema = 'public' and columns.column_default like '%nextval%'\n" +
+                        ") AND table_name='"+tableName+"'");
+
+                while (rs1.next()){
+                    result.add(rs1.getString("column_name"));
+                }
+                stmt.close();
+
+
+
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return result;
+            }
+            return  result;
+        }
+    }
 
     @Override
     public boolean isConnected() {
         return connection!=null;
     }
-
-
 
     @Override
     public void exit() throws SQLException {
@@ -230,4 +256,20 @@ public class JDBCDatabaseManager implements DatabaseManager {
         connection.close();
 
     }
+
+
+    //decide to remove todo
+    private int getResultSetRowCount(ResultSet rs) {
+        int size = 0;
+        try {
+            rs.last();
+            size = rs.getRow();
+            rs.beforeFirst();
+        }
+        catch(SQLException ex) {
+            return 0;
+        }
+        return size;
+    }
+
 }
