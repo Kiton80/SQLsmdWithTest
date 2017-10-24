@@ -1,15 +1,17 @@
 package main.java.Sqlcmd.model;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Created by Kirill on 09.07.2017.
  */
 public interface DatabaseManager {
 
-    DataSet[] getTableData(String tableName);
+    //DataSet[] getTableData(String tableName);
+    public ArrayList<DataSet> getTableData(String tableName);
 
-    String[] getTableNames();
+
 
     void connect(String database, String userName, String password);
 
@@ -22,9 +24,13 @@ public interface DatabaseManager {
     void update(String tableName, int id, DataSet newValue);
 
     String[] getTableColumns(String tableName);
-    String[] getTabls();
+
+    // String[] getTabls();
+   String[] getTableNames();
 
     boolean isConnected();
 
     void exit() throws SQLException;
+
+    String[] getTableColumnsName(String tableName);
 }
