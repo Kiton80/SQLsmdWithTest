@@ -16,13 +16,13 @@ public interface DatabaseManager {
 
     void connect(String database, String userName, String password);
 
-    boolean insert(String tableName, DataSet input) throws Exception;
+//    boolean insert(String tableName, DataSet input) throws Exception;
 
     void clear(String tableName);
 
     void deleteTable(String tableName);
 
-    void create(String tableName, DataSet input);
+    boolean create(String tableName, DataSet input) throws Exception;
 
     void update(String tableName, int id, DataSet newValue);
 

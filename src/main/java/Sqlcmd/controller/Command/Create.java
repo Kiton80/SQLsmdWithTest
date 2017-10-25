@@ -25,7 +25,7 @@ public class Create implements Command{
     }
 
     @Override
-    public void execute(String command) {
+    public void execute(String command) throws Exception {
         String[] data = command.split("\\|");
         if (data.length % 2 != 0) {
             throw new IllegalArgumentException(String.format("Должно быть четное " +

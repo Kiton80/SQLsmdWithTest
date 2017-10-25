@@ -94,39 +94,47 @@ public class JDBCDatabaseManager implements DatabaseManager {
 
     }
 
-    @Override
-    public boolean insert(String tableName, DataSet input) throws Exception {
-        boolean flag=false;
+//    @Override
+//    public boolean insert(String tableName, DataSet input) throws Exception {
+//        boolean flag=false;
+//
+//        try (Statement stm=connection.createStatement()) {
+//            String sql = "INSERT INTO public." + tableName + " VALUES (DEFAULT";
+////            int index=0;
+//            for (int i = 0; i < input.getSize(); i++) {
+//                sql = sql + "," + input.data[i].getValue();  // BAG todo
+////                index++;
+//            }
+//            flag = stm.execute(sql + " )");
+//        }catch (SQLException e){
+//            e.printStackTrace();
+//            throw new Exception("что-то пошло не так");
+//        }
+//        return flag;
+//    }
 
-        try (Statement stm=connection.createStatement()) {
-            String sql = "INSERT INTO public." + tableName + " VALUES (DEFAULT";
-//            int index=0;
-            for (int i = 0; i < input.getSize(); i++) {
-                sql = sql + "," + input.data[i].getValue();  // BAG todo
-//                index++;
-            }
-            flag = stm.execute(sql + " )");
-        }catch (SQLException e){
-            e.printStackTrace();
-            throw new Exception("что-то пошло не так");
-        }
-        return flag;
-    }
-
     @Override
-    public void create(String tableName, DataSet input) {
+    public boolean create(String tableName, DataSet input) throws Exception {
+        boolean saccses = false;
+        int flag;
         try {
             Statement stmt = connection.createStatement();
 
             String tableNames = getNameFormated(input, "%s,");
             String values = getValuesFormated(input, "'%s',");
 
-            stmt.executeUpdate("INSERT INTO public." + tableName + " (" + tableNames + ")" +
+            flag = stmt.executeUpdate("INSERT INTO public." + tableName + " (" + tableNames + ")" +
                     "VALUES (" + values + ")");
             stmt.close();
+            if (flag > 0) {
+                saccses = true;
+            }
+            //return saccses;
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new Exception("что-то пошло не так");
         }
+        return saccses;
     }
 
     private String getValuesFormated(DataSet input, String format) {
@@ -136,6 +144,15 @@ public class JDBCDatabaseManager implements DatabaseManager {
         }
         values = values.substring(0, values.length() - 1);
         return values;
+    }
+
+    private String getNameFormated(DataSet newValue, String format) {
+        String string = "";
+        for (String name : newValue.getNames()) {
+            string += String.format(format, name);
+        }
+        string = string.substring(0, string.length() - 1);
+        return string;
     }
 
     @Override
@@ -159,15 +176,6 @@ public class JDBCDatabaseManager implements DatabaseManager {
             e.printStackTrace();
         }
 
-    }
-
-    private String getNameFormated(DataSet newValue, String format) {
-        String string = "";
-        for (String name : newValue.getNames()) {
-            string += String.format(format, name);
-        }
-        string = string.substring(0, string.length() - 1);
-        return string;
     }
 
     @Override
