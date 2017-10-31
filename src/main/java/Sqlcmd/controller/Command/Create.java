@@ -9,7 +9,7 @@ import main.java.Sqlcmd.view.View;
  * create|users|username|value1|user_password|value2
  */
 public class Create implements Command{
-
+    private static String COMMAND_SAMPLE = "create|tableName|column1|value1|column2|value2|...|columnN|valueN";
 
     private final DatabaseManager manager;
     private final View view;
@@ -21,7 +21,7 @@ public class Create implements Command{
 
     @Override
     public boolean isThisCommand(String command) {
-        return command.startsWith("create|");
+        return command.toLowerCase().startsWith("create");
     }
 
     @Override
@@ -29,24 +29,18 @@ public class Create implements Command{
         String[] data = command.split("\\|");
         if (data.length % 2 != 0) {
             throw new IllegalArgumentException(String.format("Должно быть четное " +
-                    "количество параметров в формате " +
-                    "'create|tableName|column1|value1|column2|value2|...|columnN|valueN', " +
-                    "а ты прислал: '%s'", command));
+                    "количество параметров в формате '%s', " +
+                    "а ты прислал: '%s'", COMMAND_SAMPLE, command));
         }
-
         String tableName = data[1];
-
         DataSet dataSet = new DataSet();
         for (int index = 1; index < (data.length / 2); index++) {
             String columnName = data[index*2];
             String value = data[index*2 + 1];
-
             dataSet.put(columnName, value);
         }
         manager.create(tableName, dataSet);
-
         view.write(String.format("Запись %s была успешно создана в таблице '%s'.", dataSet, tableName));
-
     }
 
     @Override

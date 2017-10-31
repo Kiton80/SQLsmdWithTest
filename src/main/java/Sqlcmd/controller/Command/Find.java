@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class Find implements Command {
     private static String COMMAND_SAMPLE = "find|TableName";
-    private static int OFFSET=25;
+    private static int OFFSET = 15;
 
     private DatabaseManager manager;
     private View view;
@@ -28,7 +28,7 @@ public class Find implements Command {
 
     @Override
     public boolean isThisCommand(String command) {
-            return command.startsWith("find|");
+        return command.toLowerCase().startsWith("find|");
     }
 
     @Override

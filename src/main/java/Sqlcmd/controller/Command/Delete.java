@@ -24,7 +24,7 @@ public class Delete implements Command {
     @Override
     public boolean isThisCommand(String command) {
 
-        return command.startsWith("deleteTable|");
+        return command.toLowerCase().startsWith("deleteTable|");
     }
 
     @Override
