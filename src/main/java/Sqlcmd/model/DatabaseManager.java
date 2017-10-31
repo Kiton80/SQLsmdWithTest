@@ -12,9 +12,10 @@ public interface DatabaseManager {
     //DataSet[] getTableData(String tableName);
     public ArrayList<DataSet> getTableData(String tableName);
 
+    public boolean createTable(String tableName, List<String> input, int offset) throws SQLException;
 
 
-    void connect(String database, String userName, String password);
+    void connect(String database, String userName, String password) throws Exception;
 
 //    boolean insert(String tableName, DataSet input) throws Exception;
 
@@ -22,14 +23,14 @@ public interface DatabaseManager {
 
     void deleteTable(String tableName);
 
-    boolean create(String tableName, DataSet input) throws Exception;
+    void create(String tableName, DataSet input) throws Exception;
 
     void update(String tableName, int id, DataSet newValue);
 
     String[] getTableColumns(String tableName);
 
     // String[] getTabls();
-   String[] getTableNames();
+    String[] getTableNames() throws Exception;
 
     boolean isConnected();
 
@@ -37,7 +38,7 @@ public interface DatabaseManager {
 
     String[] getTableColumnsName(String tableName);
 
-    List<String> ColumnNamesWithoutAvtoincrement(String tableName);
+    List<String> ColumnNamesWithoutAvtoincrement(String tableName) throws Exception;
 
    // int insert (String tableName,DataSet input);
 }

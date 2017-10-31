@@ -31,21 +31,25 @@ public class JDBCDatabaseManager implements DatabaseManager {
         return resultDataSet;
     }
 
-
     @Override
-    public String[] getTableNames() {
-
-        Set<String> tables = new LinkedHashSet<>();
-        try (Statement stmt = connection.createStatement();
-             ResultSet tableNames = stmt.executeQuery("SELECT table_name FROM information_schema.tables " +
-                     "WHERE table_schema='public' AND table_type='BASE TABLE'")) {
-            while (tableNames.next()) {
-                tables.add(tableNames.getString("table_name"));
-            }
-            return tables.toArray(new String[tables.size()]);
-        } catch (SQLException e) {
-            throw new RuntimeException(e.getLocalizedMessage());
+    public boolean createTable(String tableName, List<String> input, int offset) throws SQLException {
+        boolean saccses = false;
+        StringBuilder sb = new StringBuilder();
+        for (String name : input) {
+            sb.append("," + name + " VARCHAR (" + offset + ") ");
         }
+
+        try (Statement stm = connection.createStatement()) {
+            String sql = String.format("CREATE TABLE public." + tableName + "(id_" + tableName +
+                    " SERIAL PRIMARY KEY NOT NULL  %s )", sb.toString());
+            if (stm.executeUpdate(sql) > 0) {
+                saccses = true;
+            }
+
+        }
+
+
+        return saccses;
     }
 
     @Override
@@ -87,54 +91,35 @@ public class JDBCDatabaseManager implements DatabaseManager {
     public void deleteTable(String tableName) {
         try {
             Statement stmt = connection.createStatement();
-            stmt.execute("DROP TABLE IF EXISTS public. " + "(" + tableName + ")");
+            stmt.execute("DROP TABLE IF EXISTS public. " + tableName);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
 
-//    @Override
-//    public boolean insert(String tableName, DataSet input) throws Exception {
-//        boolean flag=false;
-//
-//        try (Statement stm=connection.createStatement()) {
-//            String sql = "INSERT INTO public." + tableName + " VALUES (DEFAULT";
-////            int index=0;
-//            for (int i = 0; i < input.getSize(); i++) {
-//                sql = sql + "," + input.data[i].getValue();  // BAG todo
-////                index++;
-//            }
-//            flag = stm.execute(sql + " )");
-//        }catch (SQLException e){
-//            e.printStackTrace();
-//            throw new Exception("что-то пошло не так");
-//        }
-//        return flag;
-//    }
-
     @Override
-    public boolean create(String tableName, DataSet input) throws Exception {
+    public void create(String tableName, DataSet input) throws Exception {
         boolean saccses = false;
         int flag;
         try {
             Statement stmt = connection.createStatement();
 
-            String tableNames = getNameFormated(input, "%s,");
+            String ColumnNames = getNameFormated(input, "%s,");
             String values = getValuesFormated(input, "'%s',");
 
-            flag = stmt.executeUpdate("INSERT INTO public." + tableName + " (" + tableNames + ")" +
+            flag = stmt.executeUpdate("INSERT INTO public." + tableName + " (" + ColumnNames + ")" +
                     "VALUES (" + values + ")");
             stmt.close();
             if (flag > 0) {
                 saccses = true;
             }
-            //return saccses;
+
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new Exception("что-то пошло не так");
+
+            throw new Exception(e.getMessage());
         }
-        return saccses;
+
     }
 
     private String getValuesFormated(DataSet input, String format) {
@@ -225,7 +210,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public List<String> ColumnNamesWithoutAvtoincrement(String tableName) {
+    public List<String> ColumnNamesWithoutAvtoincrement(String tableName) throws Exception {
         {
             ArrayList<String> result = new ArrayList<>();
             try {
@@ -246,8 +231,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
 
 
             } catch (SQLException e) {
-                e.printStackTrace();
-                return result;
+                throw new Exception(e.getMessage());
             }
             return  result;
         }
@@ -265,6 +249,22 @@ public class JDBCDatabaseManager implements DatabaseManager {
 
     }
 
+    @Override
+    public String[] getTableNames() throws Exception {
+
+        Set<String> tables = new LinkedHashSet<>();
+        try (Statement stmt = connection.createStatement();
+             ResultSet tableNames = stmt.executeQuery("SELECT table_name FROM information_schema.tables " +
+                     "WHERE table_schema='public' AND table_type='BASE TABLE'")) {
+            while (tableNames.next()) {
+                tables.add(tableNames.getString("table_name"));
+            }
+            return tables.toArray(new String[tables.size()]);
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
 
     //decide to remove todo
     private int getResultSetRowCount(ResultSet rs) {
@@ -279,5 +279,25 @@ public class JDBCDatabaseManager implements DatabaseManager {
         }
         return size;
     }
+
+//    @Override
+//    public boolean insert(String tableName, DataSet input) throws Exception {
+//        boolean flag=false;
+//
+//        try (Statement stm=connection.createStatement()) {
+//            String sql = "INSERT INTO public." + tableName + " VALUES (DEFAULT";
+////            int index=0;
+//            for (int i = 0; i < input.getSize(); i++) {
+//                sql = sql + "," + input.data[i].getValue();  // BAG todo
+////                index++;
+//            }
+//            flag = stm.execute(sql + " )");
+//        }catch (SQLException e){
+//            e.printStackTrace();
+//            throw new Exception("что-то пошло не так");
+//        }
+//        return flag;
+//    }
+
 
 }
