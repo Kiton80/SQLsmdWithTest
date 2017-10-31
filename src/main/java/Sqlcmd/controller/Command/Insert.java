@@ -6,15 +6,12 @@ import main.java.Sqlcmd.view.View;
 
 import java.sql.SQLException;
 
-/**
- * Created by Kirill on 20.10.2017.
- */
+
 //user_name|kir|user_password|ddddd
-//    user_name|git|user_password|hab
+//   connect|testSQLcmd|postgres|123456
 public class Insert implements Command {
-    private static String COMMAND_SAMPLE = "insert|tableName";
+    private static String COMMAND_SAMPLE = "insert|tn";
     private static String COMMAND_SAMPLE_II = "column1|value1|column2|value2| ... | columnN | valueN";
-    private static String COMMAND_SAMPLE_III = "user_name|kir|user_password|ddddd";
     private static int OFFSET = 15;
 
     private DatabaseManager manager;
@@ -27,97 +24,94 @@ public class Insert implements Command {
 
     @Override
     public boolean isThisCommand(String command) {
-
-        return (command.toLowerCase().startsWith("insert|"));
+        return (command.toLowerCase().startsWith("insert"));
     }
 
     @Override
-    public void execute(String command) throws Exception {
+    public void execute(String command) {
         String[] splitedCommand = command.split("\\|");
         String tableName = new String(splitedCommand[1]);
-        String[] tableNames = manager.getTableNames();
-        String input = "";
-        boolean flag = false, twoflag = false;
-        for (int i = 0; i < tableNames.length; i++) {
-            if (tableNames[i].equals(tableName)) {
-                flag = true;
+        if (validateFerstInput(tableName)) {
+            view.write("Введите команду exit для выхода из команды," +
+                    " или введите параметры вставляемой записи(количество полей должно быть четное).\n" +
+                    "формат: " + COMMAND_SAMPLE_II + "\n" +
+                    "вот поля для заполнения в таблице которую вы выбрали" +
+                    "(автоинкрементируемые поля будут добавленны автоматически).\n");
+            printTitle(tableName);
+            String secondInput = view.read();
+            if (!secondInput.toLowerCase().startsWith("exit")) {
+                Insert(tableName, secondInput);
+            } else {
+                view.write("вы вышли из команды insert");
             }
         }
-        if (flag) {
-            view.write(String.format("Таблица %s найдена в базе:", tableName));
-            view.write("Введите команду exit для выхода из команды. Или введите параметры вставляемой записи.");
-            view.write("формат: " + COMMAND_SAMPLE_II);
-        } else {
+    }
+
+    private boolean validateFerstInput(String tableName) {
+        boolean result = false;
+        try {
+            String[] tableNames = manager.getTableNames();
+            for (int i = 0; i < tableNames.length; i++) {
+                if (tableNames[i].equals(tableName)) {
+                    view.write(String.format("Таблица %s найдена в базе:", tableName));
+                    result = true;
+                }
+            }
+        } catch (Exception e) {
             view.write(String.format("Таблица %s НЕнайдена в базе:", tableName));
+            view.write(e.getMessage());
         }
+        return result;
+    }
 
-        if (Insert(tableName)) {
-            view.write("запись добавленна в таблицу" + tableName);
+    private void Insert(String tableName, String secondInput) {
+        String[] splitedInput = secondInput.split("\\|");
+        if (splitedInput.length % 2 == 0) {
+            DataSet inputedDataSet = new DataSet();
+            for (int i = 0; i < splitedInput.length / 2; i++) {
+                inputedDataSet.put(splitedInput[i * 2], splitedInput[i * 2 + 1]);
+            }
+            try {
+                manager.create(tableName, inputedDataSet);
+                view.write("В таблицу " + tableName + " успешно вставленны данные.");
+            } catch (Exception e) {
+                view.write("что-то пошло не так" + e.getMessage());
+            }
+        } else {
+            throw new IllegalArgumentException(String.format(
+                    "неверное количество полей разделенное '|'," +
+                            " должно быть четное а вы ввели %s", splitedInput.length));
         }
-
 
     }
 
-    private boolean Insert(String tableName) throws Exception {
-        String input;
-        boolean twoflag;
-        view.write("вот поля в таблице которую вы выбрали");
-        printTitle(tableName, OFFSET);
-        input = view.read();
-        if (input.equals("exit")) {
-            view.write("вы вышли из команды insert");
-            twoflag = true;
+    private void printTitle(String tableName) {
+        String[] columnNames = new String[0];
+        try {
+            columnNames = manager.ColumnNamesWithoutAvtoincrement(tableName).toArray(new String[0]);
+        } catch (Exception e) {
+            view.write("что-то пошло не так");
+            view.write(e.getMessage());
         }
-        twoflag = insertDataInTable(input, tableName);
+        String title = levelingTable(columnNames);
+        view.write(title);
+    }
 
-        return twoflag;
+    private String levelingTable(String[] columnNames) {
+        StringBuilder rezSB = new StringBuilder();
+        rezSB.append("|");
+        for (int i = 0; i < columnNames.length; i++) {
+            rezSB.append(columnNames[i]);
+            for (int j = columnNames[i].length(); j < OFFSET; j++) {
+                rezSB.append(" ");
+            }
+            rezSB.append("|");
+        }
+        return rezSB.toString();
     }
 
     @Override
     public int count() {
         return COMMAND_SAMPLE.split("|").length;
-    }
-
-    private boolean insertDataInTable(String input, String tableName) throws Exception {
-        String[] splitedInput = input.split("\\|");
-        DataSet inputedDataSet = new DataSet();
-        for (int i = 0; i < splitedInput.length / 2; i++) {
-            inputedDataSet.put(splitedInput[i * 2], splitedInput[i * 2 + 1]);
-        }
-        return manager.create(tableName, inputedDataSet);
-    }
-
-    private void printTitle(String tableName, int offset) throws SQLException {
-
-        String[] columnNames = manager.ColumnNamesWithoutAvtoincrement(tableName).toArray(new String[0]);
-        StringBuilder rezSB = new StringBuilder();
-        rezSB.append("|");
-        for (int i = 0; i < columnNames.length; i++) {
-            rezSB.append(columnNames[i]);
-            for (int j = columnNames[i].length(); j < offset; j++) {
-                rezSB.append(" ");
-            }
-            rezSB.append("|");
-        }
-        String result = rezSB.toString();
-        view.write(result);
-    }
-
-    // todo -refactoring code. maybe something will be simplified.
-    private boolean checkingFirstInput(String tableName, String[] tabelNams) throws SQLException {
-        Boolean flag = false;
-        for (int i = 0; i < tabelNams.length; i++) {
-            if (tabelNams[i].equals(tableName)) {
-                flag = !flag;
-            }
-        }
-        if (flag) {
-            view.write(String.format("Таблица %s найдена в базе. вот ее поля:", tableName));
-            printTitle(tableName, OFFSET);
-        } else {
-            view.write(String.format("В базе данных нет таблицы c указанным именем \" %s \".", tableName));
-
-        }
-        return flag;
     }
 }
