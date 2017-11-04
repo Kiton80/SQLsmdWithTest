@@ -31,33 +31,25 @@ public class JDBCDatabaseManager implements DatabaseManager {
         return resultDataSet;
     }
 
-    private int getResultSetRowCount(ResultSet rs) {
-        int size = 0;
-        try {
-            rs.last();
-            size = rs.getRow();
-            rs.beforeFirst();
-        }
-        catch(SQLException ex) {
-            return 0;
-        }
-        return size;
-    }
-
     @Override
-    public String[] getTableNames() {
-
-        Set<String> tables = new LinkedHashSet<>();
-        try (Statement stmt = connection.createStatement();
-             ResultSet tableNames = stmt.executeQuery("SELECT table_name FROM information_schema.tables " +
-                     "WHERE table_schema='public' AND table_type='BASE TABLE'")) {
-            while (tableNames.next()) {
-                tables.add(tableNames.getString("table_name"));
-            }
-            return tables.toArray(new String[tables.size()]);
-        } catch (SQLException e) {
-            throw new RuntimeException(e.getLocalizedMessage());
+    public boolean createTable(String tableName, List<String> input, int offset) throws SQLException {
+        boolean saccses = false;
+        StringBuilder sb = new StringBuilder();
+        for (String name : input) {
+            sb.append("," + name + " VARCHAR (" + offset + ") ");
         }
+
+        try (Statement stm = connection.createStatement()) {
+            String sql = String.format("CREATE TABLE public." + tableName + "(id_" + tableName +
+                    " SERIAL PRIMARY KEY NOT NULL  %s )", sb.toString());
+            if (stm.executeUpdate(sql) > 0) {
+                saccses = true;
+            }
+
+        }
+
+
+        return saccses;
     }
 
     @Override
@@ -82,6 +74,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
 
     }
 
+    // todo . wrong implementation of the method. fix and criate new.
     @Override
     public void clear(String tableName) {
         try {
@@ -95,32 +88,38 @@ public class JDBCDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void delete(String tableName) {
+    public void deleteTable(String tableName) {
         try {
             Statement stmt = connection.createStatement();
-            // String[] tableNames=
-            stmt.execute("DROP TABLE IF EXISTS public. " + "(" + tableName + ")");
+            stmt.execute("DROP TABLE IF EXISTS public. " + tableName);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
 
-
     @Override
-    public void create(String tableName, DataSet input) {
+    public void create(String tableName, DataSet input) throws Exception {
+        boolean saccses = false;
+        int flag;
         try {
             Statement stmt = connection.createStatement();
 
-            String tableNames = getNameFormated(input, "%s,");
+            String ColumnNames = getNameFormated(input, "%s,");
             String values = getValuesFormated(input, "'%s',");
 
-            stmt.executeUpdate("INSERT INTO public." + tableName + " (" + tableNames + ")" +
+            flag = stmt.executeUpdate("INSERT INTO public." + tableName + " (" + ColumnNames + ")" +
                     "VALUES (" + values + ")");
             stmt.close();
+            if (flag > 0) {
+                saccses = true;
+            }
+
         } catch (SQLException e) {
-            e.printStackTrace();
+
+            throw new Exception(e.getMessage());
         }
+
     }
 
     private String getValuesFormated(DataSet input, String format) {
@@ -130,6 +129,15 @@ public class JDBCDatabaseManager implements DatabaseManager {
         }
         values = values.substring(0, values.length() - 1);
         return values;
+    }
+
+    private String getNameFormated(DataSet newValue, String format) {
+        String string = "";
+        for (String name : newValue.getNames()) {
+            string += String.format(format, name);
+        }
+        string = string.substring(0, string.length() - 1);
+        return string;
     }
 
     @Override
@@ -155,16 +163,6 @@ public class JDBCDatabaseManager implements DatabaseManager {
 
     }
 
-    private String getNameFormated(DataSet newValue, String format) {
-        String string = "";
-        for (String name : newValue.getNames()) {
-            string += String.format(format, name);
-        }
-        string = string.substring(0, string.length() - 1);
-        return string;
-    }
-
-    //to delite!! todo
     @Override
     public String[] getTableColumns(String tableName) {
         try {
@@ -196,15 +194,10 @@ public class JDBCDatabaseManager implements DatabaseManager {
             ResultSet rs1 = stmt.executeQuery("SELECT * FROM public."+tableName);
             int columnsCount=rs1.getMetaData().getColumnCount();
             res= new String[columnsCount];
-
-//            ResultSet rs = stmt.executeQuery("SELECT * FROM information_schema.columns WHERE table_schema = 'public' AND table_name = '" + tableName);
-//
             int index=0;
             for (int i = 0; i <columnsCount ; i++) {
                 res[index++] =(String) rs1.getMetaData().getColumnName(i+1);
             }
-//            res = Arrays.copyOf(res, index, String[].class);
-            //rs.close();
             stmt.close();
 
 
@@ -216,13 +209,38 @@ public class JDBCDatabaseManager implements DatabaseManager {
         return res;
     }
 
+    @Override
+    public List<String> ColumnNamesWithoutAvtoincrement(String tableName) throws Exception {
+        {
+            ArrayList<String> result = new ArrayList<>();
+            try {
+                Statement stmt = connection.createStatement();
+
+                ResultSet rs1 = stmt.executeQuery("SELECT column_name  FROM information_schema.columns\n" +
+                        "where  Table_schema = 'public' and column_name not in (\n" +
+                        "  SELECT column_name  FROM information_schema.columns\n" +
+                        "  where  Table_schema = 'public' and columns.column_default like '%nextval%'\n" +
+                        ") AND table_name='"+tableName+"'");
+
+                while (rs1.next()){
+                    result.add(rs1.getString("column_name"));
+                }
+                stmt.close();
+
+
+
+
+            } catch (SQLException e) {
+                throw new Exception(e.getMessage());
+            }
+            return  result;
+        }
+    }
 
     @Override
     public boolean isConnected() {
         return connection!=null;
     }
-
-
 
     @Override
     public void exit() throws SQLException {
@@ -230,4 +248,56 @@ public class JDBCDatabaseManager implements DatabaseManager {
         connection.close();
 
     }
+
+    @Override
+    public String[] getTableNames() throws Exception {
+
+        Set<String> tables = new LinkedHashSet<>();
+        try (Statement stmt = connection.createStatement();
+             ResultSet tableNames = stmt.executeQuery("SELECT table_name FROM information_schema.tables " +
+                     "WHERE table_schema='public' AND table_type='BASE TABLE'")) {
+            while (tableNames.next()) {
+                tables.add(tableNames.getString("table_name"));
+            }
+            return tables.toArray(new String[tables.size()]);
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+
+    //decide to remove todo
+    private int getResultSetRowCount(ResultSet rs) {
+        int size = 0;
+        try {
+            rs.last();
+            size = rs.getRow();
+            rs.beforeFirst();
+        }
+        catch(SQLException ex) {
+            return 0;
+        }
+        return size;
+    }
+
+//    @Override
+//    public boolean insert(String tableName, DataSet input) throws Exception {
+//        boolean flag=false;
+//
+//        try (Statement stm=connection.createStatement()) {
+//            String sql = "INSERT INTO public." + tableName + " VALUES (DEFAULT";
+////            int index=0;
+//            for (int i = 0; i < input.getSize(); i++) {
+//                sql = sql + "," + input.data[i].getValue();  // BAG todo
+////                index++;
+//            }
+//            flag = stm.execute(sql + " )");
+//        }catch (SQLException e){
+//            e.printStackTrace();
+//            throw new Exception("что-то пошло не так");
+//        }
+//        return flag;
+//    }
+
+
 }

@@ -2,6 +2,7 @@ package main.java.Sqlcmd.model;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Kirill on 09.07.2017.
@@ -11,26 +12,33 @@ public interface DatabaseManager {
     //DataSet[] getTableData(String tableName);
     public ArrayList<DataSet> getTableData(String tableName);
 
+    public boolean createTable(String tableName, List<String> input, int offset) throws SQLException;
 
 
-    void connect(String database, String userName, String password);
+    void connect(String database, String userName, String password) throws Exception;
+
+//    boolean insert(String tableName, DataSet input) throws Exception;
 
     void clear(String tableName);
 
-    void delete(String tableName);
+    void deleteTable(String tableName);
 
-    void create(String tableName, DataSet input);
+    void create(String tableName, DataSet input) throws Exception;
 
     void update(String tableName, int id, DataSet newValue);
 
     String[] getTableColumns(String tableName);
 
     // String[] getTabls();
-   String[] getTableNames();
+    String[] getTableNames() throws Exception;
 
     boolean isConnected();
 
     void exit() throws SQLException;
 
     String[] getTableColumnsName(String tableName);
+
+    List<String> ColumnNamesWithoutAvtoincrement(String tableName) throws Exception;
+
+   // int insert (String tableName,DataSet input);
 }

@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public interface Command {
 
     boolean isThisCommand(String command);
-    void  execute(String str) throws SQLException;
+    void  execute(String str) throws Exception;
     int count();
 
 

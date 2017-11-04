@@ -48,6 +48,7 @@ public class MainG {
         Statement stmt = connection.createStatement();
 
         sql = "INSERT INTO users " + "VALUES (DEFAULT , 'Zara','sdfsdfsadf')";
+
         Insert(sql, stmt);
 
 
@@ -61,6 +62,13 @@ public class MainG {
 
         sql = "UPDATE users SET user_password=? WHERE id_user>40 ";
         update(sql, connection);
+
+
+        sql= "SELECT a.column_name " +
+                " FROM information_schema.columns " +
+                " where  a.Table_schema = 'public' and " +
+                "a.column_default not like '%nextval%'";
+        select(sql,connection);
 
 
     }

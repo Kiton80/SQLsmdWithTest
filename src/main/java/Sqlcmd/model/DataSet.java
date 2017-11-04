@@ -93,6 +93,10 @@ public class DataSet {
         }
     }
 
+    public int getSize(){
+        return data.length;
+    }
+
     @Override
     public String toString() {
         return "{" +

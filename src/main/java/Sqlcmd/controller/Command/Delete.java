@@ -10,7 +10,7 @@ import java.sql.SQLException;
  */
 public class Delete implements Command {
 
-    private static String COMMAND_SAMPLE = "delete|TableName";
+    private static String COMMAND_SAMPLE = "deleteTable|TableName";
 
 
     private final DatabaseManager manager;
@@ -24,13 +24,13 @@ public class Delete implements Command {
     @Override
     public boolean isThisCommand(String command) {
 
-        return command.startsWith("delete|");
+        return command.toLowerCase().startsWith("deleteTable|");
     }
 
     @Override
     public void execute(String str) throws SQLException {
         String[] splitedCommand =str.split("\\|");
-        manager.delete(splitedCommand[1]);
+        manager.deleteTable(splitedCommand[1]);
 
 
     }

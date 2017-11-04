@@ -26,7 +26,7 @@ public class Exit implements Command{
 
     @Override
     public void execute(String command) throws SQLException {
-        System.out.println("Закрываю работу служб : ");
+        System.out.println("Закрываю работу служб: ");
 
         if (databaseManager.isConnected()) { databaseManager.exit(); }
         System.out.println("_______________________ ok");
