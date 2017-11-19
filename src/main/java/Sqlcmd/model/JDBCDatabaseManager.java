@@ -1,20 +1,19 @@
 package main.java.Sqlcmd.model;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-/**
- * Created by Kirill on 09.07.2017.
- */
+
 public class JDBCDatabaseManager implements DatabaseManager {
     public Connection connection;
 
-
     @Override
-    public ArrayList<DataSet> getTableData(String tableName) {
-    ArrayList<DataSet> resultDataSet = null;
+    public ArrayList<DataSet> getTableData(String tableName) throws Exception {
+        ArrayList<DataSet> resultDataSet;
     try(Statement stmt=connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM public." + tableName);)    {
+        ResultSet rs = stmt.executeQuery("SELECT * FROM public." + tableName)) {
         ResultSetMetaData rsmd = rs.getMetaData();
         resultDataSet = new ArrayList<DataSet>();
 
@@ -26,13 +25,14 @@ public class JDBCDatabaseManager implements DatabaseManager {
             resultDataSet.add(dataSet);
         }
     } catch (SQLException e) {
-        e.printStackTrace();
+        throw new Exception(e.getMessage());
     }
         return resultDataSet;
     }
 
     @Override
-    public boolean createTable(String tableName, List<String> input, int offset) throws SQLException {
+    public boolean createTable(String tableName, List<String> input, int offset) throws Exception {
+
         boolean saccses = false;
         StringBuilder sb = new StringBuilder();
         for (String name : input) {
@@ -46,6 +46,8 @@ public class JDBCDatabaseManager implements DatabaseManager {
                 saccses = true;
             }
 
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
         }
 
 
@@ -53,7 +55,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public void connect(String database, String userName, String password) {
+    public void connect(String database, String userName, String password) throws Exception {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
@@ -66,7 +68,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
             // System.out.println(" Access connection  - ok.");
         } catch (SQLException e) {
             connection = null;
-            throw new RuntimeException(
+            throw new Exception(
                     String.format("Cant get connection for model:%s user:%s password: %s",
                             database, userName, password),
                     e);
@@ -74,32 +76,18 @@ public class JDBCDatabaseManager implements DatabaseManager {
 
     }
 
-    // todo . wrong implementation of the method. fix and criate new.
     @Override
-    public void clear(String tableName) {
-        try {
-            Statement stmt = connection.createStatement();
-            // String[] tableNames=
-            stmt.execute("DROP TABLE public. " + "(" + tableName + ")");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @Override
-    public void deleteTable(String tableName) {
-        try {
-            Statement stmt = connection.createStatement();
+    public void dropTable(String tableName) throws Exception {
+        try (Statement stmt = connection.createStatement()) {
             stmt.execute("DROP TABLE IF EXISTS public. " + tableName);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new Exception(e.getMessage());
         }
 
     }
 
     @Override
-    public void create(String tableName, DataSet input) throws Exception {
+    public void insertRow(String tableName, DataSet input) throws Exception {
         boolean saccses = false;
         int flag;
         try {
@@ -164,6 +152,23 @@ public class JDBCDatabaseManager implements DatabaseManager {
     }
 
     @Override
+    public int updateTable(String tableName, String calumnForUpdate, String newVelue, String velueForSelect) throws Exception {
+
+        String sql = "UPDATE public." + tableName + " SET " + calumnForUpdate + "=?  WHERE " + calumnForUpdate + " = ?";
+        int countChenges;
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, velueForSelect);
+            pstmt.setString(2, newVelue);
+            countChenges = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        }
+        return countChenges;
+    }
+
+    @Override
     public String[] getTableColumns(String tableName) {
         try {
             Statement stmt = connection.createStatement();
@@ -196,7 +201,7 @@ public class JDBCDatabaseManager implements DatabaseManager {
             res= new String[columnsCount];
             int index=0;
             for (int i = 0; i <columnsCount ; i++) {
-                res[index++] =(String) rs1.getMetaData().getColumnName(i+1);
+                res[index++] = rs1.getMetaData().getColumnName(i + 1);
             }
             stmt.close();
 
@@ -250,54 +255,33 @@ public class JDBCDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public String[] getTableNames() throws Exception {
+    public int getTableSize(String tableName) throws Exception {
+        String resultS;
+        try (Statement stmt = connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT count(*) FROM " + tableName);
+            rs.next();
+            resultS = rs.getString("count");
+        } catch (SQLException e) {
+            throw new Exception(e.getMessage());
+        }
+        int result = Integer.parseInt(resultS);
+        return result;
+    }
 
-        Set<String> tables = new LinkedHashSet<>();
+    @Override
+    public ArrayList<String> getTableNames() throws Exception {
+
+        ArrayList<String> tablesName = new ArrayList<>();
         try (Statement stmt = connection.createStatement();
              ResultSet tableNames = stmt.executeQuery("SELECT table_name FROM information_schema.tables " +
                      "WHERE table_schema='public' AND table_type='BASE TABLE'")) {
             while (tableNames.next()) {
-                tables.add(tableNames.getString("table_name"));
+                tablesName.add(tableNames.getString("table_name"));
             }
-            return tables.toArray(new String[tables.size()]);
+            return tablesName;
         } catch (SQLException e) {
             throw new Exception(e.getMessage());
         }
     }
-
-
-    //decide to remove todo
-    private int getResultSetRowCount(ResultSet rs) {
-        int size = 0;
-        try {
-            rs.last();
-            size = rs.getRow();
-            rs.beforeFirst();
-        }
-        catch(SQLException ex) {
-            return 0;
-        }
-        return size;
-    }
-
-//    @Override
-//    public boolean insert(String tableName, DataSet input) throws Exception {
-//        boolean flag=false;
-//
-//        try (Statement stm=connection.createStatement()) {
-//            String sql = "INSERT INTO public." + tableName + " VALUES (DEFAULT";
-////            int index=0;
-//            for (int i = 0; i < input.getSize(); i++) {
-//                sql = sql + "," + input.data[i].getValue();  // BAG todo
-////                index++;
-//            }
-//            flag = stm.execute(sql + " )");
-//        }catch (SQLException e){
-//            e.printStackTrace();
-//            throw new Exception("что-то пошло не так");
-//        }
-//        return flag;
-//    }
-
 
 }

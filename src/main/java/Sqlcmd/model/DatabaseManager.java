@@ -4,33 +4,29 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Kirill on 09.07.2017.
- */
 public interface DatabaseManager {
 
     //DataSet[] getTableData(String tableName);
-    public ArrayList<DataSet> getTableData(String tableName);
+    ArrayList<DataSet> getTableData(String tableName) throws Exception;
 
-    public boolean createTable(String tableName, List<String> input, int offset) throws SQLException;
+    boolean createTable(String tableName, List<String> input, int offset) throws Exception;
 
 
     void connect(String database, String userName, String password) throws Exception;
 
-//    boolean insert(String tableName, DataSet input) throws Exception;
+    void dropTable(String tableName) throws Exception;
 
-    void clear(String tableName);
-
-    void deleteTable(String tableName);
-
-    void create(String tableName, DataSet input) throws Exception;
+    void insertRow(String tableName, DataSet input) throws Exception;
 
     void update(String tableName, int id, DataSet newValue);
 
+    int updateTable(String tableName, String calumnForupdate, String velueForSelect, String newVelue) throws Exception;
+
     String[] getTableColumns(String tableName);
 
-    // String[] getTabls();
-    String[] getTableNames() throws Exception;
+    int getTableSize(String tableName) throws Exception;
+
+    ArrayList<String> getTableNames() throws Exception;
 
     boolean isConnected();
 
@@ -40,5 +36,5 @@ public interface DatabaseManager {
 
     List<String> ColumnNamesWithoutAvtoincrement(String tableName) throws Exception;
 
-   // int insert (String tableName,DataSet input);
+
 }

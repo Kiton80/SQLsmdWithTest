@@ -2,48 +2,42 @@ package main.java.Sqlcmd.controller.Command;
 
 import main.java.Sqlcmd.view.View;
 
-/**
- * Created by Kirill on 15.07.2017.
- */
+
 public class Help implements Command {
     private static String COMMAND_SAMPLE ="help";
+    private static String HELP_Sample = "help    формат команды:  " + COMMAND_SAMPLE;
+
+    private Command[] commands;
     private View view;
 
     public Help(View view) {
         this.view = view;
     }
 
-    @Override
-    public boolean isThisCommand(String command) {
-        return command.toLowerCase().equals("help");
+    public void setCommands(Command[] commands) {
+        this.commands = commands;
     }
 
     @Override
-    public void execute(String str)  {
-        String offset1="\t\t\t\t\t\t";
-        String offset2="\t\t\t\t\t\t\t\t\t";
-        view.write  ("Существующие команды:"+"\t\t\t\t\t"+"синтаксис");
+    public boolean isThisCommand(String command) {
+        return command.toLowerCase().startsWith("help");
+    }
 
-        view.write("connect:" +"\t\t\t\t\t"+"connect|databaseName|userName|password");
-        view.write(offset2+"для подключения к базе данных, с которой будем работать");
-
-        view.write("help:"+offset1+"help");
-        view.write(offset2+"для вывода этого списка на экран(можно использовать любой регистр)");
-
-        view.write("exit:"+offset1+"exit");
-        view.write(offset2+"для выхода из программы(можно использовать любой регистр)");
-
-        view.write("create"+offset1+"create|tableName|column1|value1|column2|value2|...|columnN|valueN");
-        view.write(offset2+"для создания записи в таблице");
-
-        view.write("AvailableTables"+"\t\t\t\t"+"AvailableTables");
-        view.write(offset2+"для вывода всех доступных таблиц ");
-
-
+    @Override
+    public void execute(String str) throws Exception {
+        for (Command command : commands) {
+            // view.write(command.getClass().getName());
+            view.write(command.help());
+        }
     }
 
     @Override
     public int count() {
         return 0;
+    }
+
+    @Override
+    public String help() {
+        return HELP_Sample;
     }
 }

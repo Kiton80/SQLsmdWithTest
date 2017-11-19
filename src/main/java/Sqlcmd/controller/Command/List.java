@@ -3,8 +3,11 @@ package main.java.Sqlcmd.controller.Command;
 import main.java.Sqlcmd.model.DatabaseManager;
 import main.java.Sqlcmd.view.View;
 
+import java.util.ArrayList;
+
 public class List implements Command {
     private static String COMMAND_SAMPLE = "list";
+    private static String HELP_Sample = "Update    формат команды:   list";
     private View view;
     private DatabaseManager manager;
 
@@ -20,15 +23,17 @@ public class List implements Command {
 
     @Override
     public void execute(String str) {
-        String[] tabelNams;
+        ArrayList<String> tabelNams;
         try {
             tabelNams = manager.getTableNames();
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < tabelNams.length; i++) {
+            for (int i = 0; i < tabelNams.size(); i++) {
                 if (i != 0) {
-                    sb.append(", ");
+                    sb.append(",");
+                    sb.append(tabelNams.get(i));
+                } else {
+                    sb.append(tabelNams.get(i));
                 }
-                sb.append(tabelNams[i]);
             }
             view.write(sb.toString());
         } catch (Exception e) {
@@ -40,5 +45,10 @@ public class List implements Command {
     @Override
     public int count() {
         return 1;
+    }
+
+    @Override
+    public String help() {
+        return HELP_Sample;
     }
 }

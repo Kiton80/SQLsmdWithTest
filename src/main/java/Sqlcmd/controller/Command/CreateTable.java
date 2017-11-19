@@ -3,85 +3,75 @@ package main.java.Sqlcmd.controller.Command;
 import main.java.Sqlcmd.model.DatabaseManager;
 import main.java.Sqlcmd.view.View;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-/**
- * Created by Kirill on 29.10.2017.
- * create
- * Команда создает новую таблицу с заданными полями
- * Формат: create|tableName|column1|column2| ... |columnN
- * где: tableName - имя таблицы
- * column1 - имя первого столбца записи
- * column2 - имя второго столбца записи
- * columnN - имя n-го столбца записи
- */
+
 public class CreateTable implements Command {
-    private static int offset = 15;
+    private static int OFFSET = 15;
     private static String COMMAND_SAMPLE = "createTable|tableName|column1|column2| ... |columnN";
     private static String COMMAND_SAMPLE_I = "createtable";
+    private static String HELP_Sample = "CreateTable    формат команды:  " + COMMAND_SAMPLE;
 
-    DatabaseManager manager;
-    View view;
+    private DatabaseManager manager;
+    private View view;
 
     public CreateTable(DatabaseManager manager, View view) {
         this.manager = manager;
         this.view = view;
     }
 
-    @Override
     public boolean isThisCommand(String command) {
-        if (command.toLowerCase().startsWith(COMMAND_SAMPLE_I)) {
-            return true;
-        } else return false;
+        return command.toLowerCase().startsWith(COMMAND_SAMPLE_I);
     }
 
-    @Override
-    public void execute(String command) throws Exception {
-
-        String[] splitedCommand = (command.split("\\|"));
+    public void execute(String command) {
+        String[] splitedCommand = command.split("\\|");
         String tableName = splitedCommand[1];
-        List<String> columnName = new ArrayList<>();
-        for (int i = 2; i < splitedCommand.length; i++) {
-            columnName.add(splitedCommand[i]);
+        ArrayList columnName = new ArrayList();
+        columnName.addAll(Arrays.asList(splitedCommand).subList(2, splitedCommand.length));
+        try {
+            if (!manager.getTableNames().contains(tableName)) {
+                manager.createTable(tableName, columnName, OFFSET);
+                view.write("Успех! Таблица " + tableName + " успешно добавленна. вот ее поля ");
+                printTitle(tableName, OFFSET);
+            } else {
+                view.write("таблица с именем " + tableName + " уже существует.");
+            }
+        } catch (Exception e) {
+            view.write("что-то пошло не так! Таблица " + tableName + " не добавленна " + e.getMessage());
         }
-        boolean saccses = manager.createTable(tableName, columnName, offset);
-        if (saccses) {
-            view.write("Успех! Таблица " + tableName + "успешно добавленна");
-            printTitle(tableName, offset);
-
-        } else {
-            view.write("что-то пошло не так! Таблица " + tableName + " не добавленна");
-        }
-
 
     }
 
-    @Override
     public int count() {
         return 0;
     }
 
-    private void printTitle(String tableName, int offset) throws SQLException {
+    @Override
+    public String help() {
+        return HELP_Sample;
+    }
 
+    private void printTitle(String tableName, int offset) {
         String[] columnNames = new String[0];
         try {
             columnNames = manager.ColumnNamesWithoutAvtoincrement(tableName).toArray(new String[0]);
         } catch (Exception e) {
-            view.write("что-то пошло не так" + e.getMessage());
+            view.write("что-то пошло не так!" + e.getMessage());
         }
+
         StringBuilder rezSB = new StringBuilder();
         rezSB.append("|");
-        for (int i = 0; i < columnNames.length; i++) {
-            rezSB.append(columnNames[i]);
-            for (int j = columnNames[i].length(); j < offset; j++) {
+        for (String columnName : columnNames) {
+            rezSB.append(columnName);
+            for (int j = columnName.length(); j < offset; ++j) {
                 rezSB.append(" ");
             }
             rezSB.append("|");
         }
         String result = rezSB.toString();
-        view.write(result);
+        this.view.write(result);
     }
+
 }

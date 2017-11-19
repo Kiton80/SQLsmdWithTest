@@ -26,12 +26,12 @@ public class DataSet {
         }
     }
 
-    public static int count=10;
-    public static int maxSize = count;
+    private static int count = 10;
+    private static int maxSize = count;
 
 
-    public Data[] data = new Data[maxSize];
-    public int freeIndex = 0;
+    private Data[] data = new Data[maxSize];
+    private int freeIndex = 0;
 
 
     public void put(String name, Object value) {
