@@ -9,8 +9,9 @@ import static org.junit.Assert.*;
  */
 public class JDBCDatabaseManagerTest {
 
-
-
+    public setUp() {
+        return 1;
+    }
 
 
 }
