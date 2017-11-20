@@ -3,11 +3,8 @@ package main.java.Sqlcmd.integration;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Created by indigo on 28.08.2015.
- */
-public class ConfigurableInputStream extends InputStream {
 
+public class ConfigurableInputStream extends InputStream {
     private String line;
     private boolean endLine = false;
 

@@ -4,35 +4,35 @@ import main.java.Sqlcmd.controller.Command.*;
 import main.java.Sqlcmd.model.DatabaseManager;
 import main.java.Sqlcmd.view.View;
 
-/**
- * Created by Kirill on 15.07.2017.
- */
-public class MainController {
+class MainController {
 
     private Command[] commands;
     private View view;
 
-    public MainController(View view, DatabaseManager manager) {
+    MainController(View view, DatabaseManager manager) {
         this.view = view;
+        Help help = new Help(view);
         this.commands = new Command[] {
                 new Connect(manager, view),
                 new Exit(view,manager),
-                new Help(view),
-                new Delete(manager,view),
+                new DropTable(manager, view),
                 new List(manager, view),
                 new Find( manager,view),
-                new Insert(manager,view),
+                new InsertRow(manager, view),
                 new CreateTable(manager, view),
+                new TableSize(manager, view),
 //                new IsConnected(manager, view),
-//               new AvailableTables(manager, view),
 //                new Clear(manager, view),
-                new Create(manager, view),
+                new Update(manager, view),
+                new InsertRow(manager, view),
                 new Find(manager, view),
-                new Unsupported(view)
+                help,
+                new Unsupported(view),
         };
+        help.setCommands(this.commands);
     }
 
-    public void run() {
+    void run() {
         try {
             doWork();
         }

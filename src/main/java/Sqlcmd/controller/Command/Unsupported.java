@@ -1,15 +1,11 @@
 package main.java.Sqlcmd.controller.Command;
 
-import main.java.Sqlcmd.model.DatabaseManager;
 import main.java.Sqlcmd.view.View;
 
 import java.sql.SQLException;
 
-/**
- * Created by Kirill on 07.10.2017.
- */
 public class Unsupported implements Command {
-
+    private static final String HELP_Sample = "Unsupported    формат команды:  команда генерируется самостоятельно";
     private View view;
 
     public Unsupported(View view) {
@@ -31,5 +27,10 @@ public class Unsupported implements Command {
     @Override
     public int count() {
         return 0;
+    }
+
+    @Override
+    public String help() {
+        return HELP_Sample;
     }
 }

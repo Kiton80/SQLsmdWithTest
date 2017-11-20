@@ -4,7 +4,7 @@ import main.java.Sqlcmd.model.DataSet;
 import main.java.Sqlcmd.model.DatabaseManager;
 import main.java.Sqlcmd.view.View;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 //user_name|kir|user_password|ddddd
@@ -13,6 +13,7 @@ public class Insert implements Command {
     private static String COMMAND_SAMPLE = "insert|tn";
     private static String COMMAND_SAMPLE_II = "column1|value1|column2|value2| ... | columnN | valueN";
     private static int OFFSET = 15;
+    private static String HELP_Sample = "Insert    формат команды:   insert|tableName  -->  column1|value1|column2|value2| ... | columnN | valueN";
 
     private DatabaseManager manager;
     private View view;
@@ -30,7 +31,7 @@ public class Insert implements Command {
     @Override
     public void execute(String command) {
         String[] splitedCommand = command.split("\\|");
-        String tableName = new String(splitedCommand[1]);
+        String tableName = splitedCommand[1];
         if (validateFerstInput(tableName)) {
             view.write("Введите команду exit для выхода из команды," +
                     " или введите параметры вставляемой записи(количество полей должно быть четное).\n" +
@@ -40,7 +41,7 @@ public class Insert implements Command {
             printTitle(tableName);
             String secondInput = view.read();
             if (!secondInput.toLowerCase().startsWith("exit")) {
-                Insert(tableName, secondInput);
+                insertRow(tableName, secondInput);
             } else {
                 view.write("вы вышли из команды insert");
             }
@@ -50,9 +51,9 @@ public class Insert implements Command {
     private boolean validateFerstInput(String tableName) {
         boolean result = false;
         try {
-            String[] tableNames = manager.getTableNames();
-            for (int i = 0; i < tableNames.length; i++) {
-                if (tableNames[i].equals(tableName)) {
+            ArrayList<String> tableNames = manager.getTableNames();
+            for (String tableName1 : tableNames) {
+                if (tableName1.equals(tableName)) {
                     view.write(String.format("Таблица %s найдена в базе:", tableName));
                     result = true;
                 }
@@ -64,7 +65,7 @@ public class Insert implements Command {
         return result;
     }
 
-    private void Insert(String tableName, String secondInput) {
+    private void insertRow(String tableName, String secondInput) {
         String[] splitedInput = secondInput.split("\\|");
         if (splitedInput.length % 2 == 0) {
             DataSet inputedDataSet = new DataSet();
@@ -72,7 +73,7 @@ public class Insert implements Command {
                 inputedDataSet.put(splitedInput[i * 2], splitedInput[i * 2 + 1]);
             }
             try {
-                manager.create(tableName, inputedDataSet);
+                manager.insertRow(tableName, inputedDataSet);
                 view.write("В таблицу " + tableName + " успешно вставленны данные.");
             } catch (Exception e) {
                 view.write("что-то пошло не так" + e.getMessage());
@@ -100,9 +101,9 @@ public class Insert implements Command {
     private String levelingTable(String[] columnNames) {
         StringBuilder rezSB = new StringBuilder();
         rezSB.append("|");
-        for (int i = 0; i < columnNames.length; i++) {
-            rezSB.append(columnNames[i]);
-            for (int j = columnNames[i].length(); j < OFFSET; j++) {
+        for (String columnName : columnNames) {
+            rezSB.append(columnName);
+            for (int j = columnName.length(); j < OFFSET; j++) {
                 rezSB.append(" ");
             }
             rezSB.append("|");
@@ -113,5 +114,10 @@ public class Insert implements Command {
     @Override
     public int count() {
         return COMMAND_SAMPLE.split("|").length;
+    }
+
+    @Override
+    public String help() {
+        return HELP_Sample;
     }
 }
