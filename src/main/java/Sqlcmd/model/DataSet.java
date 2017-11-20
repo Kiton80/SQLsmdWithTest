@@ -48,15 +48,15 @@ public class DataSet {
     }
 
     private boolean increaseSize() {
-        if (freeIndex==maxSize) {
-            maxSize=maxSize+count;
-           Data[] newData= new Data[maxSize];
+        if (freeIndex == maxSize) {
+            maxSize = maxSize + count;
+            Data[] newData = new Data[maxSize];
 
-            for (int i = 0; i <data.length-1 ; i++) {
-                newData[i]=data[i];
+            for (int i = 0; i < data.length - 1; i++) {
+                newData[i] = data[i];
             }
-            this.data=newData;
-        return true;
+            this.data = newData;
+            return true;
         }
         return false;
     }    // Remade! To test!!
@@ -93,7 +93,7 @@ public class DataSet {
         }
     }
 
-    public int getSize(){
+    public int getSize() {
         return data.length;
     }
 
@@ -103,5 +103,13 @@ public class DataSet {
                 "names:" + Arrays.toString(getNames()) + ", " +
                 "values:" + Arrays.toString(getValues()) +
                 "}";
+    }
+
+    public String NamesToString() {
+        return Arrays.toString(getNames());
+    }
+
+    public String ValuesToString() {
+        return Arrays.toString(getValues());
     }
 }

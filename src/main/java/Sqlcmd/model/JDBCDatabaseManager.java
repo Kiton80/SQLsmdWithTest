@@ -88,26 +88,16 @@ public class JDBCDatabaseManager implements DatabaseManager {
 
     @Override
     public void insertRow(String tableName, DataSet input) throws Exception {
-        boolean saccses = false;
-        int flag;
         try {
             Statement stmt = connection.createStatement();
-
             String ColumnNames = getNameFormated(input, "%s,");
             String values = getValuesFormated(input, "'%s',");
-
-            flag = stmt.executeUpdate("INSERT INTO public." + tableName + " (" + ColumnNames + ")" +
+            stmt.executeUpdate("INSERT INTO public." + tableName + " (" + ColumnNames + ")" +
                     "VALUES (" + values + ")");
             stmt.close();
-            if (flag > 0) {
-                saccses = true;
-            }
-
         } catch (SQLException e) {
-
             throw new Exception(e.getMessage());
         }
-
     }
 
     private String getValuesFormated(DataSet input, String format) {
@@ -152,13 +142,13 @@ public class JDBCDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public int updateTable(String tableName, String calumnForUpdate, String newVelue, String velueForSelect) throws Exception {
+    public int updateTable(String tableName, String calumnForUpdate, String oldVelue, String newVelue) throws Exception {
 
         String sql = "UPDATE public." + tableName + " SET " + calumnForUpdate + "=?  WHERE " + calumnForUpdate + " = ?";
         int countChenges;
         try {
             PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setString(1, velueForSelect);
+            pstmt.setString(1, oldVelue);
             pstmt.setString(2, newVelue);
             countChenges = pstmt.executeUpdate();
 
