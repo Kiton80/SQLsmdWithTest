@@ -1,4 +1,4 @@
-package Sqlcmd.service;
+package ua.nikitchenko.Sqlcmd.service;
 
 
 

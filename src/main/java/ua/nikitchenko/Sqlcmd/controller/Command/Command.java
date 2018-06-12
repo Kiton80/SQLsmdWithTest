@@ -1,4 +1,4 @@
-package main.java.Sqlcmd.controller.Command;
+package ua.nikitchenko.Sqlcmd.controller.Command;
 
 
 

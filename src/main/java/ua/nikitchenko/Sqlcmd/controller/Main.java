@@ -1,4 +1,4 @@
-package main.java.Sqlcmd.controller;
+package ua.nikitchenko.Sqlcmd.controller;
 
 import main.java.Sqlcmd.model.DatabaseManager;
 import main.java.Sqlcmd.model.JDBCDatabaseManager;
@@ -13,7 +13,7 @@ public class Main {
         View view = new Console();
         DatabaseManager manager = new JDBCDatabaseManager();
 
-        MainController controller = new MainController(view, manager);
+        main.java.Sqlcmd.controller.MainController controller = new main.java.Sqlcmd.controller.MainController(view, manager);
         controller.run();
     }
 

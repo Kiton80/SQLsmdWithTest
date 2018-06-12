@@ -1,6 +1,6 @@
-package main.java.Sqlcmd.controller;
+package ua.nikitchenko.Sqlcmd.controller;
 
-import main.java.Sqlcmd.controller.Command.*;
+
 import main.java.Sqlcmd.model.DatabaseManager;
 import main.java.Sqlcmd.view.View;
 
@@ -16,15 +16,15 @@ class MainController {
                 new Connect(manager, view),
                 new Exit(view,manager),
                 new DropTable(manager, view),
-                new List(manager, view),
+                new main.java.Sqlcmd.controller.Command.List(manager, view),
                 new Find( manager,view),
-                new InsertRow(manager, view),
+                new main.java.Sqlcmd.controller.Command.InsertRow(manager, view),
                 new CreateTable(manager, view),
                 new TableSize(manager, view),
 //                new IsConnected(manager, view),
 //                new Clear(manager, view),
                 new Update(manager, view),
-                new InsertRow(manager, view),
+                new main.java.Sqlcmd.controller.Command.InsertRow(manager, view),
                 new Find(manager, view),
                 help,
                 new Unsupported(view),
@@ -36,7 +36,7 @@ class MainController {
         try {
             doWork();
         }
-        catch (ExitException e) {
+        catch (main.java.Sqlcmd.controller.Command.ExitException e) {
             // do nothing
         }
         catch (Exception e) {

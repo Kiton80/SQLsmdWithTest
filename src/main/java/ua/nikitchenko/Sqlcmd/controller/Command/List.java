@@ -27,6 +27,7 @@ public class List implements Command {
         try {
             tabelNams = manager.getTableNames();
             StringBuilder sb = new StringBuilder();
+            view.write("найденно "+tabelNams.size()+" таблиц");
             for (int i = 0; i < tabelNams.size(); i++) {
                 if (i != 0) {
                     sb.append(",");
