@@ -6,7 +6,7 @@
 </head>
 <body>
 
-    <c:forEach names="${names}" var="name">
+    <c:forEach items="${names}" var="name">
         <a href="${name}">${name}</a><br>
     </c:forEach>
 
