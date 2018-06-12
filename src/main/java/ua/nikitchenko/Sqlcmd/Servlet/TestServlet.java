@@ -1,9 +1,10 @@
 package ua.nikitchenko.Sqlcmd.Servlet;
 
 
+import ua.nikitchenko.Sqlcmd.model.DatabaseManager;
 import ua.nikitchenko.Sqlcmd.service.Service;
 import ua.nikitchenko.Sqlcmd.service.ServiceImpl;
-import main.java.Sqlcmd.model.DatabaseManager;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

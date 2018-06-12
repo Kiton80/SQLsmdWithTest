@@ -1,17 +1,12 @@
 package ua.nikitchenko.Sqlcmd.service;
 
-
-
-import main.java.Sqlcmd.model.DatabaseManager;
-import main.java.Sqlcmd.model.JDBCDatabaseManager;
-
+import ua.nikitchenko.Sqlcmd.model.DatabaseManager;
+import ua.nikitchenko.Sqlcmd.model.JDBCDatabaseManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by Kirill on 10.02.2018.
- */
+
 public class ServiceImpl implements Service {
     private DatabaseManager manager;
 

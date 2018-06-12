@@ -1,11 +1,9 @@
-package main.java.Sqlcmd.view;
+package ua.nikitchenko.Sqlcmd.view;
 
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-/**
- * Created by indigo on 25.08.2015.
- */
+
 public class Console implements View {
     String masedg="";
     @Override

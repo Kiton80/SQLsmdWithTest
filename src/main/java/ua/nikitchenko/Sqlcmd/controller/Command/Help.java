@@ -1,7 +1,6 @@
 package ua.nikitchenko.Sqlcmd.controller.Command;
 
-import main.java.Sqlcmd.view.View;
-
+import ua.nikitchenko.Sqlcmd.view.View;
 
 public class Help implements Command {
     private static String COMMAND_SAMPLE ="help";

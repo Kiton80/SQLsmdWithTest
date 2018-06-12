@@ -1,13 +1,10 @@
-package main.java.Sqlcmd.controller.Command;
+package ua.nikitchenko.Sqlcmd.controller.Command;
 
-import main.java.Sqlcmd.model.DataSet;
-import main.java.Sqlcmd.model.DatabaseManager;
-import main.java.Sqlcmd.view.View;
 
-/**
- * Created by Kirill on 16.07.2017.
- * Insert|users|username|value1|user_password|value2
- */
+import ua.nikitchenko.Sqlcmd.model.DataSet;
+import ua.nikitchenko.Sqlcmd.model.DatabaseManager;
+import ua.nikitchenko.Sqlcmd.view.View;
+
 //todo delete
 public class InsertRow implements Command {
     private static String COMMAND_SAMPLE = "Insert|tableName|column1|value1|column2|value2|...|columnN|valueN";

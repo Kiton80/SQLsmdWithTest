@@ -1,7 +1,8 @@
 package ua.nikitchenko.Sqlcmd.controller.Command;
 
-import main.java.Sqlcmd.model.DatabaseManager;
-import main.java.Sqlcmd.view.View;
+
+import ua.nikitchenko.Sqlcmd.model.DatabaseManager;
+import ua.nikitchenko.Sqlcmd.view.View;
 
 public class Connect  implements Command {
     private static String HELP_Sample = "Connect    формат команды:  connect|testSQLcmd|postgres|123456";

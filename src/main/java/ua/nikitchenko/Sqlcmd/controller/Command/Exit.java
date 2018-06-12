@@ -1,10 +1,8 @@
 package ua.nikitchenko.Sqlcmd.controller.Command;
 
-import main.java.Sqlcmd.model.DatabaseManager;
-import main.java.Sqlcmd.view.View;
-
+import ua.nikitchenko.Sqlcmd.model.DatabaseManager;
+import ua.nikitchenko.Sqlcmd.view.View;
 import java.sql.SQLException;
-
 
 public class Exit implements Command{
     private static String COMMAND_SAMPLE = "Exit";

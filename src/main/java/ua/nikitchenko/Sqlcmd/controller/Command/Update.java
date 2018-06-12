@@ -1,8 +1,8 @@
-package main.java.Sqlcmd.controller.Command;
+package ua.nikitchenko.Sqlcmd.controller.Command;
 
-import main.java.Sqlcmd.model.DatabaseManager;
-import main.java.Sqlcmd.view.View;
 
+import ua.nikitchenko.Sqlcmd.model.DatabaseManager;
+import ua.nikitchenko.Sqlcmd.view.View;
 import java.util.ArrayList;
 
 //update|users|user_password|sdfsdfsadf|pass

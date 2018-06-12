@@ -1,13 +1,9 @@
-package main.java.Sqlcmd.model;
+package ua.nikitchenko.Sqlcmd.model;
 
 import java.util.Arrays;
 
-/**
- * Created by Kirill on 09.07.2017.
- */
+
 public class DataSet {
-
-
     static class Data {
         private String name;
         private Object value;
@@ -28,7 +24,6 @@ public class DataSet {
 
     private static int count = 10;
     private static int maxSize = count;
-
 
     private Data[] data = new Data[maxSize];
     private int freeIndex = 0;

@@ -1,4 +1,4 @@
-package main.java.Sqlcmd.model;
+package ua.nikitchenko.Sqlcmd.model;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

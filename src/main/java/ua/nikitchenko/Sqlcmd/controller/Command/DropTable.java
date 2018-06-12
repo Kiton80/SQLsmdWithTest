@@ -1,8 +1,8 @@
 package ua.nikitchenko.Sqlcmd.controller.Command;
 
-import main.java.Sqlcmd.model.DatabaseManager;
-import main.java.Sqlcmd.view.View;
 
+import ua.nikitchenko.Sqlcmd.model.DatabaseManager;
+import ua.nikitchenko.Sqlcmd.view.View;
 
 public class DropTable implements Command {
     private static String COMMAND_SAMPLE = "dropTable|TableName";

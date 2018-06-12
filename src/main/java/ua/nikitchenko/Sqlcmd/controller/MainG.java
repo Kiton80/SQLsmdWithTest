@@ -1,4 +1,4 @@
-package main.java.Sqlcmd.controller;
+package ua.nikitchenko.Sqlcmd.controller;
 
 import java.sql.*;
 import java.util.Random;

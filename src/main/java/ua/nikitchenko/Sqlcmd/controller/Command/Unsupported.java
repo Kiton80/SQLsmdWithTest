@@ -1,7 +1,6 @@
-package main.java.Sqlcmd.controller.Command;
+package ua.nikitchenko.Sqlcmd.controller.Command;
 
-import main.java.Sqlcmd.view.View;
-
+import ua.nikitchenko.Sqlcmd.view.View;
 import java.sql.SQLException;
 
 public class Unsupported implements Command {

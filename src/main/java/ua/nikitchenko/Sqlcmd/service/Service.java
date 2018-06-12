@@ -1,14 +1,8 @@
 package ua.nikitchenko.Sqlcmd.service;
 
-
-
-import main.java.Sqlcmd.model.DatabaseManager;
-
+import ua.nikitchenko.Sqlcmd.model.DatabaseManager;
 import java.util.List;
 
-/**
- * Created by Kirill on 10.02.2018.
- */
 public interface Service {
     List<String> commandsList();
 
