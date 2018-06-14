@@ -2,7 +2,6 @@ package ua.nikitchenko.Sqlcmd.model;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -159,39 +158,39 @@ public class JDBCDatabaseManager implements DatabaseManager {
     }
 
     @Override
-    public String[] getTableColumns(String tableName) {
+    public List<String> getTableColumns(String tableName) {
         try {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM information_schema.columns WHERE table_schema = 'public' AND table_name = '" + tableName + "'");
 
-            String[] tables = new String[100];
+            List<String> tableColumsName = new ArrayList<>();
 
-            int index = 0;
+
             while (rs.next()) {
-                tables[index++] = rs.getString("column_name");
+                tableColumsName.add( rs.getString("column_name"));
             }
-            tables = Arrays.copyOf(tables, index, String[].class);
+
             rs.close();
             stmt.close();
-            return tables;
+            return tableColumsName;
         } catch (SQLException e) {
             e.printStackTrace();
-            return new String[0];
+            return new ArrayList<String>();
         }
     }
 
     @Override
-    public  String[] getTableColumnsName(String tableName){
-        String[] res;
+    public List<String> getTableColumnsName(String tableName){
+        List<String> result = new ArrayList<>();
         try {
             Statement stmt = connection.createStatement();
 
             ResultSet rs1 = stmt.executeQuery("SELECT * FROM public."+tableName);
             int columnsCount=rs1.getMetaData().getColumnCount();
-            res= new String[columnsCount];
+
             int index=0;
-            for (int i = 0; i <columnsCount ; i++) {
-                res[index++] = rs1.getMetaData().getColumnName(i + 1);
+            while (rs1.next()){
+            result.add(rs1.getString("column_name"));
             }
             stmt.close();
 
@@ -199,9 +198,9 @@ public class JDBCDatabaseManager implements DatabaseManager {
 
     } catch (SQLException e) {
             e.printStackTrace();
-            return new String[0];
+            return new ArrayList<>();
         }
-        return res;
+        return result;
     }
 
     @Override

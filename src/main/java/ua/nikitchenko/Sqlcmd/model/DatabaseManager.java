@@ -22,7 +22,7 @@ public interface DatabaseManager {
 
     int updateTable(String tableName, String calumnForupdate, String velueForSelect, String newVelue) throws Exception;
 
-    String[] getTableColumns(String tableName);
+    List<String> getTableColumns(String tableName);
 
     int getTableSize(String tableName) throws Exception;
 
@@ -32,7 +32,7 @@ public interface DatabaseManager {
 
     void exit() throws SQLException;
 
-    String[] getTableColumnsName(String tableName);
+    List<String> getTableColumnsName(String tableName);
 
     List<String> ColumnNamesWithoutAvtoincrement(String tableName) throws Exception;
 

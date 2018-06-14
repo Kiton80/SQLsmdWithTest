@@ -10,9 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
 
-public class TestServlet extends HttpServlet {
+public class MainServlet extends HttpServlet {
     private Service service;
 
     @Override
@@ -27,18 +28,34 @@ public class TestServlet extends HttpServlet {
         if (req.getSession().getAttribute("db_manager")==null){
             req.getRequestDispatcher("connect.jsp").forward(req, resp);
         }
-
+        DatabaseManager manager = (DatabaseManager) req.getSession().getAttribute("db_manager");
+        if (manager==null){
+            resp.sendRedirect(resp.encodeRedirectURL("connect"));
+        }
 
         String action = getAction(req);
         if (action.startsWith("/menu") || action.equals("/")) {
             req.setAttribute("items", service.commandsList());
             req.getRequestDispatcher("menu.jsp").forward(req, resp);
+
         } else if (action.startsWith("/help")) {
             req.getRequestDispatcher("help.jsp").forward(req, resp);
+
         } else if (action.startsWith("/list")){
             req.setAttribute("names", service.list((DatabaseManager) req.getSession().getAttribute("db_manager")));
             req.getRequestDispatcher("list.jsp").forward(req, resp);
-        } else {
+
+        }else if (action.startsWith("/find")){
+            req.getSession().setAttribute("table", "users");
+            String tableName= (String) req.getSession().getAttribute("table");
+            try {
+                req.setAttribute("table", service.find(manager,tableName));
+            } catch (Exception e) {
+                req.getRequestDispatcher("error.jsp").forward(req, resp);
+            }
+            req.getRequestDispatcher("find.jsp").forward(req, resp);
+        }
+        else {
             req.getRequestDispatcher("error.jsp").forward(req, resp);
         }
     }
@@ -69,7 +86,13 @@ public class TestServlet extends HttpServlet {
                 req.setAttribute("message", e.getMessage());
                 req.getRequestDispatcher("error.jsp").forward(req, resp);
             }
-        }
+        } else if (action.startsWith("/add")){
+            //todo
+
+            }
+
+
+
     }
 
 }

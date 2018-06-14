@@ -5,19 +5,19 @@
          version="3.0">
 
     <!--<servlet>-->
-        <!--<servlet-name>TestServlet</servlet-name>-->
-        <!--<servlet-class>ru.fedichkindenis.servlets.TestServlet</servlet-class>-->
+        <!--<servlet-name>MainServlet</servlet-name>-->
+        <!--<servlet-class>ru.fedichkindenis.servlets.MainServlet</servlet-class>-->
     <!--</servlet>-->
     <!--<servlet-mapping>-->
-        <!--<servlet-name>TestServlet</servlet-name>-->
+        <!--<servlet-name>MainServlet</servlet-name>-->
         <!--<url-pattern>/</url-pattern>-->
     <!--</servlet-mapping>-->
     <servlet>
-        <servlet-name>TestServlet2</servlet-name>
-        <servlet-class>ua.nikitchenko.Sqlcmd.web.TestServlet</servlet-class>
+        <servlet-name>TestServlet</servlet-name>
+        <servlet-class>ua.nikitchenko.Sqlcmd.web.MainServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>TestServlet2</servlet-name>
+        <servlet-name>TestServlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 

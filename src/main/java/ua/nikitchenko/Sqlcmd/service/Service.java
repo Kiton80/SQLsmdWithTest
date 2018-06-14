@@ -9,4 +9,5 @@ public interface Service {
     DatabaseManager connect(String databaseName, String userName, String password) throws Exception;
 
     List<String> list(DatabaseManager manager);
+    List<List<String>> find(DatabaseManager manager,String tableName) throws Exception;
 }

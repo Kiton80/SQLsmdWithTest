@@ -18,7 +18,7 @@ class MainController {
                 new Exit(view,manager),
                 new DropTable(manager, view),
                 new List(manager, view),
-                new Find( manager,view),
+//                new Find( manager,view),
                 new InsertRow(manager, view),
                 new CreateTable(manager, view),
                 new TableSize(manager, view),
@@ -26,7 +26,7 @@ class MainController {
 //                new Clear(manager, view),
                 new Update(manager, view),
                 new InsertRow(manager, view),
-                new Find(manager, view),
+//                new Find(manager, view),
                 help,
                 new Unsupported(view),
         };

@@ -8,7 +8,7 @@
    <p>
        <a href="connect.jsp">connect</a><br>
             для подключения к базе данных, с которой будем работать нужно ввести имя базы, логин и пароль.<br>
-       <a href="list.jsp">AllTables</a><br>
+       <a href="list.jsp">list</a><br>
             для получения списка всех таблиц базы, к которой подключились<br>
        <a href="cleanTable.jsp">cleanTable</a><br>
             для очистки всей таблицы от данных<br>
