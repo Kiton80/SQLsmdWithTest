@@ -7,11 +7,5 @@
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://localhost:5432/SqlWebPostgres</jdbc-url>
     </data-source>
-    <data-source source="LOCAL" name="testSQLcmd@localhost" uuid="dfe1bd85-4dca-4ed8-af10-3b0e0b99fc4f">
-      <driver-ref>postgresql</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://localhost:5432/testSQLcmd</jdbc-url>
-    </data-source>
   </component>
 </project>

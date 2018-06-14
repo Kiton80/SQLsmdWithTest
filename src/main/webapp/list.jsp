@@ -7,7 +7,7 @@
 <body>
 
     <c:forEach items="${names}" var="name">
-        <a href="${name}">${name}</a><br>
+        <a href="find?tablename=${name}" >${name}</a><br>
     </c:forEach>
 
     <p>You can goto <a href="menu">Menu</a><br><p>

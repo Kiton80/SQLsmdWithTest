@@ -46,8 +46,9 @@ public class MainServlet extends HttpServlet {
             req.getRequestDispatcher("list.jsp").forward(req, resp);
 
         }else if (action.startsWith("/find")){
-            req.getSession().setAttribute("table", "users");
-            String tableName= (String) req.getSession().getAttribute("table");
+            String tableName;
+           if (req.getSession().getAttribute("table")!=null){
+            tableName= (String) req.getSession().getAttribute("table");} else {tableName="users";}
             try {
                 req.setAttribute("table", service.find(manager,tableName));
             } catch (Exception e) {
@@ -86,13 +87,7 @@ public class MainServlet extends HttpServlet {
                 req.setAttribute("message", e.getMessage());
                 req.getRequestDispatcher("error.jsp").forward(req, resp);
             }
-        } else if (action.startsWith("/add")){
-            //todo
-
-            }
-
-
-
+        }
     }
 
 }
